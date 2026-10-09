@@ -119,4 +119,6 @@ PUBLIC_SITE_URL=https://example.com npm run build
 
 ## 当前进度
 
+启动、写作、发表、删除、修改外观和排查报错，请查看 [网站操作手册](docs/site-operations.md)。
+
 本轮工作记录见 [项目进度](docs/project-progress.md)。正式部署前仍需要真实摄影内容、实际托管地址，以及背景素材的使用许可确认或替换。
