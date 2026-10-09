@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">摄影测试封面</title>
+  <desc id="desc">深色背景中的红色光线和抽象相机轮廓</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0a0a0a"/>
+      <stop offset="0.55" stop-color="#25110e"/>
+      <stop offset="1" stop-color="#080808"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="46%" r="45%">
+      <stop offset="0" stop-color="#ef7950" stop-opacity=".9"/>
+      <stop offset=".45" stop-color="#b7432d" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#080808" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="26"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <ellipse cx="820" cy="425" rx="430" ry="260" fill="url(#glow)" filter="url(#blur)"/>
+  <path d="M0 760 C280 660 420 800 690 690 S1140 580 1600 720" fill="none" stroke="#dc7052" stroke-opacity=".35" stroke-width="3"/>
+  <g transform="translate(520 250)" fill="none" stroke="#e9e5de" stroke-width="10" opacity=".9">
+    <rect x="0" y="90" width="560" height="300" rx="34"/>
+    <path d="M90 90 145 25h155l55 65"/>
+    <circle cx="280" cy="240" r="125" stroke="#dc7052" stroke-width="18"/>
+    <circle cx="280" cy="240" r="52" stroke="#e9e5de" stroke-width="7"/>
+    <circle cx="470" cy="145" r="18" fill="#dc7052" stroke="none"/>
+  </g>
+  <text x="800" y="790" fill="#b8b3aa" font-family="monospace" font-size="28" letter-spacing="8" text-anchor="middle">PHOTO TEST / 01</text>
+</svg>

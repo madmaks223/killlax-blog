@@ -98,7 +98,7 @@ draft: false
 
 完成正文、摘要与日期核对后，将 `draft` 改为 `false`，再运行 `npm run build`，检查内容 schema 和全部静态输出。草稿不会生成文章页面，也不会进入首页、文章列表、RSS 或 sitemap；需要在浏览器检查排版时，可暂时在本地设为 `false`，检查完后恢复。
 
-首篇真实文章方向已确定为摄影。提纲位于 `src/content/posts/first-photography.md`，尚待补充实际照片或拍摄笔记；目前公开内容仍只有示例文章。
+首篇真实文章方向已确定为摄影。提纲位于 `src/content/posts/first-photography.md`，尚待补充实际照片或拍摄笔记；当前另有一篇明确标注为临时用途的图片功能测试文章 `photo-test.md`。
 
 ## 发布基础设施
 
