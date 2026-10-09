@@ -1,0 +1,82 @@
+---
+import '../styles/flame-preview.css';
+import MatrixFlameBackground from '../components/MatrixFlameBackground.astro';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="robots" content="noindex, follow" />
+    <title>火焰背景预览 — killlax</title>
+  </head>
+  <body>
+    <main class="flame-lab" data-mode="reference">
+      <MatrixFlameBackground />
+
+      <header class="lab-header">
+        <a class="lab-back" href="/" aria-label="返回 killlax 首页"><span aria-hidden="true">←</span> killlax</a>
+        <p class="lab-kicker">VISUAL STUDY / 01</p>
+      </header>
+
+      <section class="lab-content">
+        <p class="lab-eyebrow"><span class="live-dot"></span> ASH / DATA / FIRE</p>
+        <h1>让数据燃烧起来<span>.</span></h1>
+        <p class="lab-description">一组为 killlax 探索的背景方向。<br />流动的粒子组成火焰，像余烬在黑暗里保持呼吸。</p>
+
+        <div class="mode-switch" role="group" aria-label="预览方案">
+          <button class="mode-button" type="button" data-mode="embers" aria-pressed="false">01 / 余烬数据</button>
+          <button class="mode-button" type="button" data-mode="soulfire" aria-pressed="false">02 / 深渊火焰</button>
+          <button class="mode-button active" type="button" data-mode="reference" aria-pressed="true">03 / 余烬 + 篝火</button>
+        </div>
+        <div class="reference-controls" data-reference-controls>
+          <label for="reference-brightness">图片亮度</label>
+          <input id="reference-brightness" type="range" min="18" max="100" value="80" step="1" />
+          <output for="reference-brightness" data-brightness-value>80%</output>
+        </div>
+        <p class="mode-caption" data-caption>螺旋剑、篝火与缓缓流动的数据。</p>
+      </section>
+
+      <footer class="lab-footer">
+        <span>CONCEPT PREVIEW / NOT DEPLOYED</span>
+        <span>建议在桌面端查看动态细节</span>
+      </footer>
+    </main>
+
+    <script>
+      const lab = document.querySelector<HTMLElement>('.flame-lab')!;
+      const background = lab.querySelector<HTMLElement>('[data-matrix-flame]')!;
+      const buttons = [...document.querySelectorAll<HTMLButtonElement>('.mode-button')];
+      const caption = document.querySelector<HTMLElement>('[data-caption]')!;
+      const controls = document.querySelector<HTMLElement>('[data-reference-controls]')!;
+      const brightness = document.querySelector<HTMLInputElement>('#reference-brightness')!;
+      const value = document.querySelector<HTMLOutputElement>('[data-brightness-value]')!;
+      const captions: Record<string, string> = {
+        embers: '细密的 Matrix 字符列，从灰烬里慢慢亮起来。',
+        soulfire: '更密、更近，像深渊边缘不肯熄灭的代码火。',
+        reference: '螺旋剑、篝火与缓缓流动的数据。',
+      };
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.mode!;
+          lab.dataset.mode = mode;
+          background.dispatchEvent(new CustomEvent('flame-mode', { detail: mode }));
+          buttons.forEach((item) => {
+            item.classList.toggle('active', item === button);
+            item.setAttribute('aria-pressed', String(item === button));
+          });
+          controls.hidden = mode !== 'reference';
+          caption.textContent = captions[mode];
+        });
+      });
+
+      brightness.addEventListener('input', () => {
+        background.style.setProperty('--reference-brightness', String(Number(brightness.value) / 100));
+        value.value = `${brightness.value}%`;
+      });
+    </script>
+  </body>
+</html>

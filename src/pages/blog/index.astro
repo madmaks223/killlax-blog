@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title="文章">
+  <section class="page-intro">
+    <p class="eyebrow">THE JOURNAL</p>
+    <h1>文章<span class="period">.</span></h1>
+    <p>一些关于兴趣、灵感和正在发生的事。</p>
+  </section>
+  <section class="archive-list" aria-label="文章列表">
+    {posts.map((post) => (
+      <article class="archive-item">
+        <a href={`/blog/${post.id}/`} class="archive-main">
+          <div class="archive-meta"><time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time><span>{post.data.tags.join(' / ')}</span></div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+        <a class="archive-arrow" href={`/blog/${post.id}/`} aria-label={`阅读：${post.data.title}`}>↗</a>
+      </article>
+    ))}
+    {posts.length === 0 && <p class="empty-note">还没有公开文章。</p>}
+  </section>
+</BaseLayout>

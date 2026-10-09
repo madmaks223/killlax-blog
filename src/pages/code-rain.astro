@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Code Rain Demo" noindex>
+  <div class="code-rain-page">
+    <canvas id="code-rain" aria-hidden="true"></canvas>
+
+    <section class="demo-content" aria-labelledby="demo-title">
+      <p class="demo-kicker"><span class="live-dot"></span> LIVE BACKGROUND STUDY / 01</p>
+      <h1 id="demo-title">横向 ASCII<br /><span>代码流。</span></h1>
+      <p class="demo-copy">把字符变成一层安静的动态纹理，适合作为网页的背景。</p>
+      <div class="demo-controls" aria-label="动画控制">
+        <label>
+          <span>流速</span>
+          <input id="speed-control" type="range" min="0" max="100" value="32" />
+        </label>
+        <label>
+          <span>亮度</span>
+          <input id="opacity-control" type="range" min="0" max="100" value="30" />
+        </label>
+        <button id="pause-control" type="button" aria-pressed="false">暂停动画</button>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .code-rain-page {
+    position: relative;
+    isolation: isolate;
+    min-height: calc(100vh - 164px);
+    overflow: hidden;
+    margin: 0 calc((100% - 100vw) / 2);
+    padding: 0 max(24px, calc((100vw - 920px) / 2));
+    background: #151a22;
+  }
+
+  #code-rain {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .demo-content {
+    display: flex;
+    min-height: calc(100vh - 164px);
+    flex-direction: column;
+    justify-content: center;
+    max-width: 540px;
+    padding: 78px 0;
+  }
+
+  .demo-kicker {
+    margin: 0 0 19px;
+    color: #8f9bad;
+    font: 11px/1.4 var(--mono);
+    letter-spacing: 0.08em;
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin: 0 9px 1px 0;
+    border-radius: 50%;
+    background: #71c7b1;
+    box-shadow: 0 0 12px #71c7b180;
+  }
+
+  .demo-content h1 {
+    margin: 0;
+    color: #f0f3f6;
+    font-size: clamp(42px, 7vw, 68px);
+    font-weight: 600;
+    line-height: 1.16;
+  }
+
+  .demo-content h1 span { color: #9ec2d4; }
+
+  .demo-copy {
+    max-width: 390px;
+    margin: 26px 0 36px;
+    color: #a4aebc;
+    font-size: 16px;
+  }
+
+  .demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 18px 25px;
+    color: #c0c9d3;
+    font-size: 12px;
+  }
+
+  .demo-controls label {
+    display: grid;
+    gap: 7px;
+    width: 122px;
+  }
+
+  .demo-controls input {
+    width: 100%;
+    accent-color: #9ec2d4;
+    cursor: pointer;
+  }
+
+  .demo-controls button {
+    min-height: 31px;
+    padding: 5px 11px;
+    border: 1px solid #657281;
+    border-radius: 3px;
+    background: #202833b8;
+    color: #d5dce3;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .demo-controls button:hover { border-color: #aac8d7; }
+
+  @media (max-width: 600px) {
+    .code-rain-page {
+      min-height: calc(100vh - 148px);
+      margin: 0 -18px;
+      padding: 0 18px;
+    }
+
+    .demo-content { min-height: calc(100vh - 148px); padding: 60px 0; }
+    .demo-copy { font-size: 15px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #code-rain { display: none; }
+    .code-rain-page { background: #151a22; }
+  }
+</style>
+
+<script>
+  const canvas = document.querySelector<HTMLCanvasElement>('#code-rain');
+  const speedControl = document.querySelector<HTMLInputElement>('#speed-control');
+  const opacityControl = document.querySelector<HTMLInputElement>('#opacity-control');
+  const pauseControl = document.querySelector<HTMLButtonElement>('#pause-control');
+
+  if (canvas && speedControl && opacityControl && pauseControl) {
+    const ctx = canvas.getContext('2d');
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}<>?/\\|';
+    const rowHeight = 29;
+    let width = 0;
+    let height = 0;
+    let rows: Array<{ x: number; y: number; speed: number; text: string }> = [];
+    let animationFrame = 0;
+    let paused = false;
+
+    const randomText = (length: number) => Array.from({ length }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
+      rows = Array.from({ length: Math.ceil(height / rowHeight) + 3 }, (_, index) => ({
+        x: Math.random() * -width,
+        y: index * rowHeight,
+        speed: 0.45 + Math.random() * 0.7,
+        text: randomText(Math.ceil(width / 13) + 85),
+      }));
+    };
+
+    const draw = () => {
+      if (!ctx) return;
+      const userOpacity = Number(opacityControl.value) / 100;
+      const userSpeed = Number(speedControl.value) / 32;
+      ctx.fillStyle = 'rgba(21, 26, 34, 0.13)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = '600 20px "DM Mono", "SFMono-Regular", Consolas, monospace';
+      ctx.textBaseline = 'top';
+
+      rows.forEach((row) => {
+        if (!paused) row.x -= row.speed * userSpeed;
+        const textWidth = ctx.measureText(row.text).width;
+        if (row.x < -textWidth) {
+          row.x = width + Math.random() * 80;
+          row.text = randomText(Math.ceil(width / 13) + 85);
+        }
+        const distanceFade = 0.22 + (row.y / height) * 0.3;
+        ctx.fillStyle = `rgba(143, 159, 180, ${userOpacity * distanceFade})`;
+        ctx.fillText(row.text, row.x, row.y);
+      });
+
+      animationFrame = requestAnimationFrame(draw);
+    };
+
+    pauseControl.addEventListener('click', () => {
+      paused = !paused;
+      pauseControl.textContent = paused ? '继续动画' : '暂停动画';
+      pauseControl.setAttribute('aria-pressed', String(paused));
+    });
+    window.addEventListener('resize', resize);
+    resize();
+    draw();
+
+    window.addEventListener('pagehide', () => cancelAnimationFrame(animationFrame), { once: true });
+  }
+</script>

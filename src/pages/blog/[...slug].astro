@@ -1,0 +1,27 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} type="article" published={post.data.published} updated={post.data.updated}>
+  <article class="article-page">
+    <a class="back-link" href="/blog/">← 返回文章列表</a>
+    <header class="article-header">
+      <p class="eyebrow">{post.data.tags.join(' / ') || 'JOURNAL'}</p>
+      <h1>{post.data.title}</h1>
+      <p class="article-description">{post.data.description}</p>
+      <time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time>
+      {post.data.updated && <span class="article-updated"> · 更新于 <time datetime={post.data.updated.toISOString()}>{dateFormat.format(post.data.updated)}</time></span>}
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+</BaseLayout>
