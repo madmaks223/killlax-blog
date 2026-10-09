@@ -14,7 +14,7 @@
 - 关于页
 - Markdown 写作
 
-图片展示功能后续添加。第一版暂不实现后台 CMS、评论、用户系统、复杂社区模块或其他扩展内容。
+已支持可选文章封面、正文图片和标签浏览。第一版暂不实现后台 CMS、评论、用户系统、复杂社区模块或其他扩展内容。
 
 ## 视觉方向
 
@@ -43,6 +43,7 @@ npm run dev -- --host 127.0.0.1
 /                 首页
 /blog/            文章列表
 /blog/文章-slug/  文章详情
+/blog/tags/标签/   标签文章
 /about/           关于
 ```
 
@@ -66,13 +67,34 @@ title: 文章标题
 description: 一句话摘要，会显示在列表页和分享信息中。
 published: 2026-10-09
 updated: 2026-10-10
+cover: /images/example-cover.webp
+coverAlt: 封面图片的描述
 tags:
   - 摄影
 draft: false
 ---
 ```
 
-`updated` 可选，仅在实质更新文章后填写。标题、摘要、发布日期必填；标签默认为空数组，`draft` 默认为 `false`，所以新稿请显式设置 `draft: true`。
+`updated`、`cover` 和 `coverAlt` 可选，仅在实际更新或有素材时填写。封面图片放在 `public/images/`，frontmatter 使用以 `/images/` 开头的路径；正文图片也使用相同路径。标题、摘要、发布日期必填；标签默认为空数组，`draft` 默认为 `false`，所以新稿请显式设置 `draft: true`。
+
+文章列表会显示封面（如果填写），详情页显示完整封面，分享信息自动采用封面；正文图片会自动限制宽度以适配手机。列表封面使用 16:9 裁切，文章内图片保留完整比例。为封面填写有意义的 `coverAlt`。
+
+正文图片示例（先将文件放入 `public/images/`）：
+
+```md
+![描述照片里的真实内容](/images/photo-walk.webp)
+```
+
+需要图注时可使用：
+
+```html
+<figure>
+  <img src="/images/photo-walk.webp" alt="描述照片里的真实内容" width="1600" height="1067" loading="lazy" decoding="async" />
+  <figcaption>拍摄地点或这张照片的说明。</figcaption>
+</figure>
+```
+
+按实际图片填写宽高，优先用压缩后的 WebP/AVIF，避免把原始大图直接放入仓库。
 
 完成正文、摘要与日期核对后，将 `draft` 改为 `false`，再运行 `npm run build`，检查内容 schema 和全部静态输出。草稿不会生成文章页面，也不会进入首页、文章列表、RSS 或 sitemap；需要在浏览器检查排版时，可暂时在本地设为 `false`，检查完后恢复。
 

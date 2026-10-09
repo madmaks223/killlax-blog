@@ -12,7 +12,7 @@ const { Content } = await render(post);
 const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} type="article" published={post.data.published} updated={post.data.updated}>
+<BaseLayout title={post.data.title} description={post.data.description} type="article" published={post.data.published} updated={post.data.updated} image={post.data.cover} imageAlt={post.data.coverAlt}>
   <article class="article-page">
     <a class="back-link" href="/blog/">← 返回文章列表</a>
     <header class="article-header">
@@ -21,7 +21,9 @@ const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'l
       <p class="article-description">{post.data.description}</p>
       <time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time>
       {post.data.updated && <span class="article-updated"> · 更新于 <time datetime={post.data.updated.toISOString()}>{dateFormat.format(post.data.updated)}</time></span>}
+      {post.data.tags.length > 0 && <nav class="article-tags" aria-label="文章标签">{post.data.tags.map((tag) => <a href={`/blog/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}</nav>}
     </header>
+    {post.data.cover && <img class="article-cover" src={post.data.cover} alt={post.data.coverAlt || ''} decoding="async" />}
     <div class="prose"><Content /></div>
   </article>
 </BaseLayout>

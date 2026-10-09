@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+  const tags = [...new Set(allPosts.flatMap((post) => post.data.tags))];
+  return tags.map((tag) => ({ params: { tag }, props: { tag } }));
+}
+
+const { tag } = Astro.props;
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const posts = allPosts
+  .filter((post) => post.data.tags.includes(tag))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title={`标签：${tag}`} description={`浏览 killlax 中标记为「${tag}」的文章。`}>
+  <section class="page-intro tag-page-intro">
+    <a class="back-link" href="/blog/">← 返回文章列表</a>
+    <p class="eyebrow">TAGGED NOTES</p>
+    <h1>{tag}<span class="period">.</span></h1>
+    <p>{posts.length} 篇文章</p>
+  </section>
+  <section class="archive-list" aria-label={`${tag} 标签下的文章`}>
+    {posts.map((post) => (
+      <article class="archive-item">
+        <a href={`/blog/${post.id}/`} class="archive-main">
+          {post.data.cover && <img class="archive-cover" src={post.data.cover} alt={post.data.coverAlt || ''} loading="lazy" />}
+          <div class="archive-meta"><time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time><span>{post.data.tags.join(' / ')}</span></div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+        <a class="archive-arrow" href={`/blog/${post.id}/`} aria-label={`阅读：${post.data.title}`}>↗</a>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
