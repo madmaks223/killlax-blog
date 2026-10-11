@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../config';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
@@ -16,18 +17,18 @@ const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2
     <div class="topic-line" aria-label="关注主题">
       <span>摄影</span><b>·</b><span>滑板</span><b>·</b><span>AI</span><b>·</b><span>二次元</span><b>·</b><span>RoboMaster</span>
     </div>
-    <a class="text-link" href="/about/">多认识一点 <span aria-hidden="true">↗</span></a>
+    <a class="text-link" href={withBase('/about/')}>多认识一点 <span aria-hidden="true">↗</span></a>
   </section>
 
   <section class="recent-section" aria-labelledby="recent-heading">
     <div class="section-heading">
       <div><p class="eyebrow">LATEST NOTES</p><h2 id="recent-heading">最近写下</h2></div>
-      <a class="text-link" href="/blog/">全部文章 <span aria-hidden="true">→</span></a>
+      <a class="text-link" href={withBase('/blog/')}>全部文章 <span aria-hidden="true">→</span></a>
     </div>
     {posts.length > 0 ? (
       <div class="post-list">
         {posts.map((post) => (
-          <a class="post-row" href={`/blog/${post.id}/`}>
+          <a class="post-row" href={withBase(`/blog/${post.id}/`)}>
             <time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time>
             <span class="post-row-title">{post.data.title}</span>
             <span class="row-arrow" aria-hidden="true">↗</span>

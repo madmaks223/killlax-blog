@@ -101,7 +101,7 @@ draft: true
 public/images/night-walk.webp
 ~~~
 
-网页路径是 /images/night-walk.webp，不包含 public。使用英文文件名，优先压缩成 WebP/AVIF；不要只改扩展名，必须实际转换格式。
+封面和正文图片都使用 /images/night-walk.webp，构建时页面会自动加入 GitHub Pages 的站点前缀。路径中不要写 public。使用英文文件名，优先压缩成 WebP/AVIF；不要只改扩展名，必须实际转换格式。
 
 在文章顶部信息加入封面：
 
@@ -130,7 +130,7 @@ coverAlt: 夜晚街道上的路灯与行人
 3. 在本地打开 /blog/night-walk/，检查图片、文字和手机布局。
 4. 运行 npm run build，确认整个命令成功完成。
 5. 保存 Git 版本。
-6. 网站接入公开托管平台后，再按该平台的部署方式更新线上版本。
+6. 运行 git push，等待 GitHub Actions 部署成功，再检查公开网址。
 
 ~~~sh
 npm run build
@@ -138,11 +138,14 @@ git status --short
 git add -- src/content/posts/night-walk.md public/images/night-walk.webp
 git diff --cached
 git commit -m "Add night walk article"
+git push
 ~~~
 
 没有图片时，git add 只写文章路径。提交前检查暂存差异是否仅包含这次需要保存的内容。
 
-当前尚未连接远程仓库或部署平台。draft: false、构建成功和 Git 提交都不会自行让别人看到网站。真正公开需要托管平台和实际网址；以后接入自动部署，再通过推送触发上线。
+当前已连接远程仓库 https://github.com/madmaks223/killlax-blog ，并配置 GitHub Pages 自动部署。首次发布需要先在仓库 Settings → Pages 选择 GitHub Actions；免费个人套餐需要公开仓库才能启用 Pages。推送后在 Actions 查看 Deploy Astro site to GitHub Pages，部署成功后访问 https://madmaks223.github.io/killlax-blog/ 。本地保存和 commit 不会自动更新线上，必须 git push 且部署成功。
+
+公开仓库中的 Markdown 草稿、图片和提交历史也可被查看；draft: true 只是不生成文章页面。
 
 更新已有文章时编辑原文件即可，尽量不要改文件名；可添加 updated: 2026-10-10（用实际更新日期）。构建成功后，提交这次改动。
 
@@ -152,7 +155,7 @@ git commit -m "Add night walk article"
 
 ### 暂时隐藏
 
-把 draft 改为 true，再构建、提交。Markdown 和图片仍留在项目中，可以随时改回 false。
+把 draft 改为 true，再构建、提交并 git push。Markdown 和图片仍留在项目中，可以随时改回 false。
 
 隐藏文章不会删除 public/images/ 中的图片；部署后，只要图片文件还保留，它的直接地址仍可能访问。draft 不适合保存需要保密的内容。
 
@@ -166,6 +169,7 @@ git status --short
 git add -A
 git diff --cached
 git commit -m "Remove night walk article"
+git push
 ~~~
 
 git add 也会记录已删除文件。仅删除某篇文章，不要改页面路由文件。文章列表、首页、标签页、RSS 和 sitemap 在重新构建时自动更新。
@@ -258,7 +262,7 @@ npm run preview -- --host 127.0.0.1 --port 4322
 
 打开实际输出的预览地址；这会预览 dist 中的构建结果，编辑源文件后必须重新 build。4322 避免与开发服务器默认端口冲突；如已被占用，换个空闲端口。前台 preview 用 Control+C 停止，后台 preview 用 npm run preview -- stop 停止；它与开发服务器分别管理。
 
-上线前设置真实 PUBLIC_SITE_URL；当前 killlax.example 是占位地址，不是已注册的站点。域名配置与本地预览是不同步骤。
+上线前确认 GitHub 仓库的 Settings → Pages → Source 为 GitHub Actions。当前公开地址是 https://madmaks223.github.io/killlax-blog/；如果以后改用自定义域名，再修改工作流中的 PUBLIC_SITE_URL 和 PUBLIC_BASE_PATH。
 
 ## 11. 需要协助时给什么信息
 

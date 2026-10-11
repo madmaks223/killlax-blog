@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { siteConfig } from '../config';
+import { basePath, siteConfig, withBase } from '../config';
 import MatrixFlameBackground from '../components/MatrixFlameBackground.astro';
 
 interface Props {
@@ -22,8 +22,9 @@ const {
 } = Astro.props;
 const pageTitle = title ? `${title} — ${siteConfig.name}` : siteConfig.name;
 const path = Astro.url.pathname;
-const canonicalUrl = new URL(path, Astro.site ?? siteConfig.url).href;
-const imageUrl = image ? new URL(image, Astro.site ?? siteConfig.url).href : undefined;
+const sitePath = path.startsWith(basePath) ? path.slice(basePath.length) || '/' : path;
+const canonicalUrl = new URL(withBase(sitePath), Astro.site ?? siteConfig.url).href;
+const imageUrl = image ? new URL(withBase(image), Astro.site ?? siteConfig.url).href : undefined;
 ---
 
 <!doctype html>
@@ -51,25 +52,25 @@ const imageUrl = image ? new URL(image, Astro.site ?? siteConfig.url).href : und
     {imageUrl && imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS`} href="/rss.xml" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS`} href={withBase('/rss.xml')} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{pageTitle}</title>
   </head>
   <body class:list={{ 'home-page': flameBackground }}>
     {flameBackground && <div class="home-background"><MatrixFlameBackground /></div>}
     <div class="site-shell">
       <header class="site-header">
-        <a class="wordmark" href="/" aria-label="killlax 首页">killlax<span>.</span></a>
+        <a class="wordmark" href={withBase('/')} aria-label="killlax 首页">killlax<span>.</span></a>
         <nav aria-label="主导航">
-          <a class:list={{ active: path.startsWith('/blog/') }} aria-current={path.startsWith('/blog/') ? 'page' : undefined} href="/blog/">文章</a>
-          <a class:list={{ active: path === '/about/' }} aria-current={path === '/about/' ? 'page' : undefined} href="/about/">关于</a>
+          <a class:list={{ active: sitePath.startsWith('/blog/') }} aria-current={sitePath.startsWith('/blog/') ? 'page' : undefined} href={withBase('/blog/')}>文章</a>
+          <a class:list={{ active: sitePath === '/about/' }} aria-current={sitePath === '/about/' ? 'page' : undefined} href={withBase('/about/')}>关于</a>
         </nav>
       </header>
       <main>
         <slot />
       </main>
       <footer class="site-footer">
-        <span>这里是 killlax · <a class="footer-rss" href="/rss.xml">RSS</a></span>
+        <span>这里是 killlax · <a class="footer-rss" href={withBase('/rss.xml')}>RSS</a></span>
         <span>用好奇心记录世界 <i aria-hidden="true">✳</i></span>
       </footer>
     </div>

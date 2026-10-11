@@ -3,10 +3,13 @@ interface Props {
   mode?: 'embers' | 'soulfire' | 'reference';
 }
 
+import { withBase } from '../config';
+
 const { mode = 'reference' } = Astro.props;
+const referenceImage = withBase('/flame-preview/bonfire-embers.webp');
 ---
 
-<div class="matrix-flame" data-matrix-flame data-mode={mode} aria-hidden="true">
+<div class="matrix-flame" data-matrix-flame data-mode={mode} style={`--reference-image: url("${referenceImage}")`} aria-hidden="true">
   <canvas data-flame-canvas></canvas>
   <div class="matrix-reference"></div>
   <canvas data-ash-canvas></canvas>
@@ -18,7 +21,7 @@ const { mode = 'reference' } = Astro.props;
   .matrix-flame { --reference-brightness: .8; --fire-breath: 1; position: absolute; inset: 0; z-index: -1; overflow: hidden; isolation: isolate; pointer-events: none; background: #050505; }
   canvas, .matrix-reference, .matrix-noise, .matrix-vignette { position: absolute; inset: 0; width: 100%; height: 100%; }
   [data-flame-canvas] { z-index: 0; }
-  .matrix-reference { z-index: 1; opacity: 0; background: url('/flame-preview/bonfire-embers.webp') center 54% / min(100vw, 920px) auto no-repeat; filter: brightness(calc(var(--reference-brightness) * var(--fire-breath))); mix-blend-mode: screen; transition: opacity .5s ease; mask-image: radial-gradient(ellipse at center, #000 32%, transparent 76%); }
+  .matrix-reference { z-index: 1; opacity: 0; background: var(--reference-image) center 54% / min(100vw, 920px) auto no-repeat; filter: brightness(calc(var(--reference-brightness) * var(--fire-breath))); mix-blend-mode: screen; transition: opacity .5s ease; mask-image: radial-gradient(ellipse at center, #000 32%, transparent 76%); }
   [data-mode='reference'] .matrix-reference { opacity: .8; }
   [data-ash-canvas] { z-index: 2; opacity: 0; }
   [data-mode='reference'] [data-ash-canvas] { opacity: 1; }

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../config';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
@@ -17,13 +18,13 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) =
   <section class="archive-list" aria-label="文章列表">
     {posts.map((post) => (
       <article class="archive-item">
-        <a href={`/blog/${post.id}/`} class="archive-main">
-          {post.data.cover && <img class="archive-cover" src={post.data.cover} alt={post.data.coverAlt || ''} loading="lazy" />}
+        <a href={withBase(`/blog/${post.id}/`)} class="archive-main">
+          {post.data.cover && <img class="archive-cover" src={withBase(post.data.cover)} alt={post.data.coverAlt || ''} loading="lazy" />}
           <div class="archive-meta"><time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time><span>{post.data.tags.join(' / ')}</span></div>
           <h2>{post.data.title}</h2>
           <p>{post.data.description}</p>
         </a>
-        <a class="archive-arrow" href={`/blog/${post.id}/`} aria-label={`阅读：${post.data.title}`}>↗</a>
+        <a class="archive-arrow" href={withBase(`/blog/${post.id}/`)} aria-label={`阅读：${post.data.title}`}>↗</a>
       </article>
     ))}
     {posts.length === 0 && <p class="empty-note">还没有公开文章。</p>}
@@ -31,7 +32,7 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) =
   {tags.length > 0 && (
     <nav class="tag-index" aria-label="按标签浏览">
       <span class="tag-index-label">标签</span>
-      {tags.map((tag) => <a href={`/blog/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}
+      {tags.map((tag) => <a href={withBase(`/blog/tags/${encodeURIComponent(tag)}/`)}>{tag}</a>)}
     </nav>
   )}
 </BaseLayout>

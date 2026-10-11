@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../config';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -14,16 +15,16 @@ const dateFormat = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'l
 
 <BaseLayout title={post.data.title} description={post.data.description} type="article" published={post.data.published} updated={post.data.updated} image={post.data.cover} imageAlt={post.data.coverAlt}>
   <article class="article-page">
-    <a class="back-link" href="/blog/">← 返回文章列表</a>
+    <a class="back-link" href={withBase('/blog/')}>← 返回文章列表</a>
     <header class="article-header">
       <p class="eyebrow">{post.data.tags.join(' / ') || 'JOURNAL'}</p>
       <h1>{post.data.title}</h1>
       <p class="article-description">{post.data.description}</p>
       <time datetime={post.data.published.toISOString()}>{dateFormat.format(post.data.published)}</time>
       {post.data.updated && <span class="article-updated"> · 更新于 <time datetime={post.data.updated.toISOString()}>{dateFormat.format(post.data.updated)}</time></span>}
-      {post.data.tags.length > 0 && <nav class="article-tags" aria-label="文章标签">{post.data.tags.map((tag) => <a href={`/blog/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}</nav>}
+      {post.data.tags.length > 0 && <nav class="article-tags" aria-label="文章标签">{post.data.tags.map((tag) => <a href={withBase(`/blog/tags/${encodeURIComponent(tag)}/`)}>{tag}</a>)}</nav>}
     </header>
-    {post.data.cover && <img class="article-cover" src={post.data.cover} alt={post.data.coverAlt || ''} decoding="async" />}
+    {post.data.cover && <img class="article-cover" src={withBase(post.data.cover)} alt={post.data.coverAlt || ''} decoding="async" />}
     <div class="prose"><Content /></div>
   </article>
 </BaseLayout>

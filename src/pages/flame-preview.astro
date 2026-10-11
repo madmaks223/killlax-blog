@@ -1,6 +1,7 @@
 ---
 import '../styles/flame-preview.css';
 import MatrixFlameBackground from '../components/MatrixFlameBackground.astro';
+import { withBase } from '../config';
 ---
 
 <!doctype html>
@@ -17,7 +18,7 @@ import MatrixFlameBackground from '../components/MatrixFlameBackground.astro';
       <MatrixFlameBackground />
 
       <header class="lab-header">
-        <a class="lab-back" href="/" aria-label="返回 killlax 首页"><span aria-hidden="true">←</span> killlax</a>
+        <a class="lab-back" href={withBase('/')} aria-label="返回 killlax 首页"><span aria-hidden="true">←</span> killlax</a>
         <p class="lab-kicker">VISUAL STUDY / 01</p>
       </header>
 

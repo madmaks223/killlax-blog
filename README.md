@@ -113,7 +113,21 @@ draft: false
 PUBLIC_SITE_URL=https://example.com npm run build
 ```
 
-未设置时使用 `https://killlax.example` 作为本地开发占位地址。canonical、RSS、sitemap 和 robots 会一起采用配置地址。当前使用根路径部署，GitHub Pages 的仓库子路径部署需要另行配置 `base`。
+未设置时使用 `https://killlax.example` 作为本地开发占位地址。canonical、RSS、sitemap 和 robots 会一起采用配置地址。
+
+## GitHub Pages 部署
+
+项目已包含 `.github/workflows/deploy-pages.yml`。它会在 `main` 分支收到推送后自动运行 `npm ci`、`npm run build`，再把 `dist/` 发布到 GitHub Pages。
+
+第一次使用时，在 GitHub 仓库打开 **Settings → Pages**，将 **Source** 设为 **GitHub Actions**。免费个人套餐需要公开仓库才能启用 Pages；公开仓库中的源码、草稿和提交历史都会可见。之后推送到 `main`，等待 **Actions** 中的 `Deploy Astro site to GitHub Pages` 完成。
+
+当前仓库对应的网址是：
+
+```text
+https://madmaks223.github.io/killlax-blog/
+```
+
+项目已经为 GitHub Pages 的 `/killlax-blog/` 子路径处理导航、图片、RSS、sitemap 和分享地址。
 
 `/flame-preview/` 与 `/code-rain/` 保留为本地实验页面，设置 `noindex` 且排除在 sitemap 外；它们仍会参与构建，上线前决定是否保留。`noindex` 不是访问限制。
 
