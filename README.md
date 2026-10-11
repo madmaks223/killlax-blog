@@ -127,6 +127,8 @@ PUBLIC_SITE_URL=https://example.com npm run build
 https://madmaks223.github.io/killlax-blog/
 ```
 
+2026-10-11 已完成公开仓库、GitHub Actions 来源设置和首次成功部署。以后修改文章后提交并 `git push`，部署成功后线上自动更新；关闭本地电脑不会影响网站访问。
+
 项目已经为 GitHub Pages 的 `/killlax-blog/` 子路径处理导航、图片、RSS、sitemap 和分享地址。
 
 `/flame-preview/` 与 `/code-rain/` 保留为本地实验页面，设置 `noindex` 且排除在 sitemap 外；它们仍会参与构建，上线前决定是否保留。`noindex` 不是访问限制。
@@ -135,4 +137,4 @@ https://madmaks223.github.io/killlax-blog/
 
 启动、写作、发表、删除、修改外观和排查报错，请查看 [网站操作手册](docs/site-operations.md)。
 
-本轮工作记录见 [项目进度](docs/project-progress.md)。正式部署前仍需要真实摄影内容、实际托管地址，以及背景素材的使用许可确认或替换。
+本轮工作记录见 [项目进度](docs/project-progress.md)。网站已部署到 GitHub Pages；后续继续补充真实摄影内容，并确认背景素材的使用许可或替换素材。
